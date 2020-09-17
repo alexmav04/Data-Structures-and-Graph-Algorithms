@@ -1,7 +1,3 @@
-// Convert a date in "yyyy/mm/dd" into name of "the name of month dd, yyyy".
-// author: 309652014 楊珈禎
-// date:2020/09/17
-
 #include <iostream>
 #include <map>
 #include <string>
@@ -17,6 +13,7 @@ string dateConverter(string date);
 int DaysInYear(string date);
 string DateSub(string date1, string date2);
 string DayOfWeek(string date);
+string DateAdd(string date, int n);
 
 int month_days[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -36,10 +33,17 @@ int main() {
     if (!isValidDate(date[0]) || !isValidDate(date[1])) {
       msg = "It is not a valid date.";
     } else {
-      msg = DateSub(date[0], date[1]);
+      msg = DateSub(date[0], date[1]) + " days from " + dateConverter(date[0]) +
+            " to " + dateConverter(date[1]);
     }
   } else if (dateinput.find("+") != dateinput.npos) {
-
+    vector<string> date;
+    date = strSplit(dateinput, "+");
+    if (!isValidDate(date[0])) {
+      msg = "It is not a valid date.";
+    } else {
+      msg = DateAdd(date[0], atoi(date[1].c_str()));
+    }
   } else if (dateinput.find("/") != dateinput.npos) {
     if (isValidDate(dateinput)) {
       msg = dateConverter(dateinput) + " is " + DayOfWeek(dateinput);
@@ -84,10 +88,11 @@ bool isLeapYear(int year) {
 
 bool isValidDate(string date) {
   vector<string> vstrDate = strSplit(date, "/");
+  int intYear = 0, intMonth = 0, intDay = 0;
 
-  int intYear = atoi(vstrDate[0].c_str());
-  int intMonth = atoi(vstrDate[1].c_str());
-  int intDay = atoi(vstrDate[2].c_str());
+  intYear = atoi(vstrDate[0].c_str());
+  intMonth = atoi(vstrDate[1].c_str());
+  intDay = atoi(vstrDate[2].c_str());
 
   if (vstrDate.size() != 3)
     return false;
@@ -100,7 +105,7 @@ bool isValidDate(string date) {
   else
     month_days[1] = 28;
 
-  if (intDay > month_days[intMonth + 1])
+  if (intDay > month_days[intMonth - 1])
     return false;
 
   return true;
@@ -156,11 +161,12 @@ string monthConverter(int month) {
 
 string dateConverter(string date) {
   string convDate = "";
+  int intMonth = 0;
 
   if (!isValidDate(date)) {
     convDate = "It is not a valid date.";
   } else {
-    int intMonth = atoi(strSplit(date, "/")[1].c_str());
+    intMonth = atoi(strSplit(date, "/")[1].c_str());
     convDate = monthConverter(intMonth) + " " + strSplit(date, "/")[2] + ", " +
                strSplit(date, "/")[0];
   }
@@ -169,10 +175,11 @@ string dateConverter(string date) {
 
 int DaysInYear(string date) {
   vector<string> vstrDate = strSplit(date, "/");
+  int intYear = 0, intMonth = 0, intDay = 0;
 
-  int intYear = atoi(vstrDate[0].c_str());
-  int intMonth = atoi(vstrDate[1].c_str());
-  int intDay = atoi(vstrDate[2].c_str());
+  intYear = atoi(vstrDate[0].c_str());
+  intMonth = atoi(vstrDate[1].c_str());
+  intDay = atoi(vstrDate[2].c_str());
 
   if (isLeapYear(intYear))
     month_days[1] = 29;
@@ -275,4 +282,31 @@ string DateSub(string date1, string date2) {
   return msg;
 }
 
-// string DateAdd(string date, int n) {}
+string DateAdd(string date, int n) {
+  string msg = "", newdate = "";
+  vector<string> vstrDate1;
+  Date dtDate1;
+  int cntDays = 0;
+  if (!isValidDate(date) || n < 0) {
+    msg = "It is not a valid date.";
+  } else {
+    vstrDate1 = strSplit(date, "/");
+
+    dtDate1.year = atoi(vstrDate1[0].c_str());
+    dtDate1.month = atoi(vstrDate1[1].c_str());
+    dtDate1.day = atoi(vstrDate1[2].c_str());
+
+    cntDays = dtDate1.day + n;
+
+    while (month_days[dtDate1.month - 1] < cntDays) {
+      cntDays -= month_days[dtDate1.month - 1];
+      dtDate1.month += 1;
+    }
+    dtDate1.day = cntDays;
+    newdate = to_string(dtDate1.year) + "/" + to_string(dtDate1.month) + "/" +
+              to_string(dtDate1.day);
+  }
+  msg = to_string(n) + " days after " + dateConverter(date) + " is " +
+        dateConverter(newdate);
+  return msg;
+}
