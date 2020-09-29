@@ -17,3 +17,11 @@ This is for the homework in the class "Data-Structures-and-Graph-Algorithms".
   3. DateAdd(date, n)  
     enter *2020/09/17+60*  
     print *60 days after September 17, 2020 is November 16, 2020*
+
+## 2-Basic-Algorithm
+* Implement the following sorting algorithms and compare their performances.
+  1. Insertion sort
+  2. Selection sort
+  3. Quick sort
+  4. Merge sort
+  5. Heap sort

@@ -1,5 +1,8 @@
+// Convert a date in yyyy/mm/dd into "name of the month" dd, yyyy
+// Implement at least the following operations: DayOfWeek(date), DateSub(date1, date2), DateAdd(date, n)
+//date:2020-09-18
+
 #include <iostream>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -59,6 +62,7 @@ int main() {
   return 0;
 }
 
+//split string by a character
 vector<string> strSplit(string s, string sep) {
   vector<string> str_split;
   int pos_current = 0;
@@ -77,6 +81,7 @@ vector<string> strSplit(string s, string sep) {
   return str_split;
 }
 
+//check if the year is leap year
 bool isLeapYear(int year) {
   if ((year % 4 == 0) && (year % 100 != 0))
     return true;
@@ -86,6 +91,7 @@ bool isLeapYear(int year) {
     return false;
 }
 
+//check if the type of input data is valid
 bool isValidDate(string date) {
   vector<string> vstrDate = strSplit(date, "/");
   int intYear = 0, intMonth = 0, intDay = 0;
@@ -111,6 +117,7 @@ bool isValidDate(string date) {
   return true;
 }
 
+//convert month(a number) into its name
 string monthConverter(int month) {
   string strMonth;
 
@@ -159,6 +166,7 @@ string monthConverter(int month) {
   return strMonth;
 }
 
+//convert input into a specified format
 string dateConverter(string date) {
   string convDate = "";
   int intMonth = 0;
@@ -173,6 +181,7 @@ string dateConverter(string date) {
   return convDate;
 }
 
+//count how many days pass 
 int DaysInYear(string date) {
   vector<string> vstrDate = strSplit(date, "/");
   int intYear = 0, intMonth = 0, intDay = 0;
@@ -192,6 +201,7 @@ int DaysInYear(string date) {
   return intDay;
 }
 
+//convert the day of week into its name
 string DayOfWeek(string date) {
   int subDate = atoi(DateSub("1753/01/01", date).c_str());
 
@@ -225,6 +235,7 @@ string DayOfWeek(string date) {
   return strDayofWeek;
 }
 
+//return numbers of days from date1 to date2
 string DateSub(string date1, string date2) {
   string msg = "";
   vector<string> vstrDate1, vstrDate2;
@@ -282,6 +293,7 @@ string DateSub(string date1, string date2) {
   return msg;
 }
 
+//return the day which is n days after date
 string DateAdd(string date, int n) {
   string msg = "", newdate = "";
   vector<string> vstrDate1;
@@ -298,9 +310,23 @@ string DateAdd(string date, int n) {
 
     cntDays = dtDate1.day + n;
 
+    if (isLeapYear(dtDate1.year))
+      month_days[1] = 29;
+    else
+      month_days[1] = 28;
+
     while (month_days[dtDate1.month - 1] < cntDays) {
       cntDays -= month_days[dtDate1.month - 1];
       dtDate1.month += 1;
+      if (dtDate1.month > 12) {
+        dtDate1.year += 1;
+        dtDate1.month = 1;
+        
+        if (isLeapYear(dtDate1.year))
+          month_days[1] = 29;
+        else
+          month_days[1] = 28;
+      }
     }
     dtDate1.day = cntDays;
     newdate = to_string(dtDate1.year) + "/" + to_string(dtDate1.month) + "/" +
@@ -310,3 +336,5 @@ string DateAdd(string date, int n) {
         dateConverter(newdate);
   return msg;
 }
+
+
