@@ -1,6 +1,11 @@
 // Convert a date in yyyy/mm/dd into "name of the month" dd, yyyy
+<<<<<<< HEAD:01-Date-Data-Type.cpp
 // Implement at least the following operations: DayOfWeek(date), DateSub(date1, date2), DateAdd(date, n)
 //date:2020-09-18
+=======
+// Implement at least the following operations: DayOfWeek(date), DateSub(date1,
+// date2), DateAdd(date, n) date:2020-09-18
+>>>>>>> 201e2c49bca8a963c37d636adb4cfc97637eba94:1-Date-Data-Type.cpp
 
 #include <iostream>
 #include <string>
