@@ -25,3 +25,10 @@ This is for the homework in the class "Data-Structures-and-Graph-Algorithms".
   3. Quick sort
   4. Merge sort
   5. Heap sort
+
+## 3-Maze
+* Design and implement efficient data structure and algorithm for finding shortest path from the start cell s to the destination cell t in a maze of dimension m x
+n.
+
+## 4-Sparse-Matrix
+* Implement an efficient data structure for sparse matrices.
