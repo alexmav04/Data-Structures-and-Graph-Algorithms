@@ -13,11 +13,21 @@ void newNode(struct llNode **start, int newrow_pos, int newcolumn_pos,
              int newvalue);
 int *strSplit(string s, string sep);
 
+
 struct llNode {
   int value;
   int row_pos;
   int column_pos;
   llNode *next;
+};
+
+class LinkedList {
+private:
+  llNode *first;
+
+public:
+  LinkedList() : first(0){}; 
+  void PrintList();
 };
 
 int main() {
@@ -72,6 +82,20 @@ void newNode(struct llNode **start, int newrow_pos, int newcolumn_pos,
     tempNew->next = NULL;
     temp->next = tempNew;
   }
+}
+
+void LinkedList::PrintList() {
+  if (first == 0) {
+    cout << "List is empty.\n";
+    return;
+  }
+
+  llNode *current = first;
+  while (current != 0) {
+    cout << current->value << " ";
+    current = current->next;
+  }
+  cout << endl;
 }
 
 int *strSplit(string s, string sep) {
