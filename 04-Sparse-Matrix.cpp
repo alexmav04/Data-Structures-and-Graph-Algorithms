@@ -1,24 +1,24 @@
 /*
 Implement an efficient data structure for sparse matrices.
-
 date:2020-10-26
 */
 
-// C program for Sparse Matrix Representation
-// using Linked Lists
-
 #include <iostream>
+#include <string>
 using namespace std;
-void newNode(struct llNode **start, int newrow_pos, int newcolumn_pos,
-             int newvalue);
-int *strSplit(string s, string sep);
 
-
-struct llNode {
+class llNode {
+private:
   int value;
   int row_pos;
   int column_pos;
   llNode *next;
+
+public:
+  llNode() : next(NULL){};
+  llNode(int a) : value(a), next(NULL){};
+
+  friend class LinkedList;
 };
 
 class LinkedList {
@@ -26,96 +26,95 @@ private:
   llNode *first;
 
 public:
-  LinkedList() : first(0){}; 
+  LinkedList() : first(NULL){};
   void PrintList();
+  void addNode(int newrow_pos, int newcolumn_pos, int newvalue);
+  void printMatrix(int m, int n);
+  void matrixAdd(LinkedList A, LinkedList B);
 };
 
 int main() {
-  int m, n;
+  int m, n, pos, value;
+
   cin >> m >> n;
+  LinkedList list1;
 
-  int input_value, input_col;
-  int *input;
-  string inputStr;
-  struct llNode *tmpNode = NULL;
-
-  for (int i = 0; i < m; i++) { // m行內
-    int j = 0;
-
-    cin >> inputStr;
-    input = strSplit(inputStr, " ");
-
-    while (j < sizeof(input)) {
-      if (input[j] != 0) {
-        input_col = input[j + 1];
-        newNode(&tmpNode, i, input_col, input_value);
-
-        j = j + 2;
-      } else {
-        break;
-      }
-    }
+  for (int i = 0; i < m; i++) {
+    while (cin >> pos && pos != 0) {
+      cin >> value;
+      list1.addNode(i, pos, value);
+    };
   }
+  list1.PrintList();
+  list1.printMatrix(m, n);
+
+  return 0;
 }
 
-void newNode(struct llNode **start, int newrow_pos, int newcolumn_pos,
-             int newvalue) {
-  struct llNode *temp, *tempNew;
-  temp = *start;
-  if (temp == NULL) {
-    temp = (struct llNode *)malloc(sizeof(struct llNode));
+void LinkedList::addNode(int newrow_pos, int newcolumn_pos, int newvalue) {
+  llNode *newNode = new llNode(newvalue);
+  llNode *temp = new llNode();
+  llNode *tempNew = new llNode();
 
+  if (first == NULL) {
     temp->value = newvalue;
     temp->row_pos = newrow_pos;
-    temp->column_pos = newcolumn_pos;
+    temp->column_pos = newcolumn_pos - 1;
     temp->next = NULL;
 
-    *start = temp;
+    first = temp;
   } else {
-    while (temp->next != NULL)
+    temp = first;
+    while (temp->next != NULL) {
       temp = temp->next;
-
-    tempNew = (struct llNode *)malloc(sizeof(struct llNode));
+    }
     tempNew->value = newvalue;
     tempNew->row_pos = newrow_pos;
-    tempNew->column_pos = newcolumn_pos;
+    tempNew->column_pos = newcolumn_pos - 1;
     tempNew->next = NULL;
     temp->next = tempNew;
   }
 }
 
+// for test
 void LinkedList::PrintList() {
-  if (first == 0) {
+  if (first == NULL) {
     cout << "List is empty.\n";
     return;
   }
 
   llNode *current = first;
-  while (current != 0) {
+  while (current != NULL) {
     cout << current->value << " ";
     current = current->next;
   }
   cout << endl;
 }
 
-int *strSplit(string s, string sep) {
-  int *str_split;
-  int pos_current = 0;
-  int pos_next = 0;
-  int i = 0;
-  int inttmp;
-
-  while (pos_next < s.length()) {
-    pos_next = s.find_first_of(sep, pos_current);
-    if (pos_next != pos_current) {
-      string strtmp = s.substr(pos_current, pos_next - pos_current);
-      if (!strtmp.empty()) {
-        inttmp = atoi(strtmp.c_str());
-        str_split[i] = inttmp;
-        i++;
-      }
+void LinkedList::printMatrix(int m, int n) {
+  llNode *current = first;
+  int **matrix;
+  matrix = new int *[m];
+  for (int i = 0; i < m; i++) {
+    matrix[i] = new int[m];
+    for (int j = 0; j < n; j++) {
+      matrix[i][j] = 0;
     }
-    pos_current = pos_next + 1;
   }
-  return str_split;
+  while (current != NULL) {
+    int row, col;
+    row = current->row_pos;
+    col = current->column_pos;
+
+    matrix[row][col] = current->value;
+    current = current->next;
+  }
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      cout << matrix[i][j] << " ";
+    }
+    cout << endl;
+  }
 }
+
+void LinkedList::matrixAdd(LinkedList A, LinkedList B) {}
