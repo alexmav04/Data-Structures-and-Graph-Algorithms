@@ -30,23 +30,43 @@ public:
   void PrintList();
   void addNode(int newrow_pos, int newcolumn_pos, int newvalue);
   void printMatrix(int m, int n);
-  void matrixAdd(LinkedList A, LinkedList B);
+  LinkedList matrixAdd(LinkedList A, LinkedList B);
 };
 
 int main() {
   int m, n, pos, value;
 
   cin >> m >> n;
-  LinkedList list1;
+  LinkedList list1, list2, list3;
 
+  cout << "Enter the element of matrix A:" << endl;
   for (int i = 0; i < m; i++) {
     while (cin >> pos && pos != 0) {
       cin >> value;
+      pos = pos - 1;
       list1.addNode(i, pos, value);
     };
   }
-  list1.PrintList();
+
+  cout << "Enter the element of matrix B:" << endl;
+  for (int j = 0; j < m; j++) {
+    while (cin >> pos && pos != 0) {
+      cin >> value;
+      pos = pos - 1;
+      list2.addNode(j, pos, value);
+    };
+  }
+
+  list3 = list3.matrixAdd(list1, list2);
+
   list1.printMatrix(m, n);
+  cout << endl;
+  list2.printMatrix(m, n);
+  cout << endl;
+  list3.PrintList();
+  cout << endl;
+  list3.printMatrix(m, n);
+  cout << endl;
 
   return 0;
 }
@@ -59,7 +79,7 @@ void LinkedList::addNode(int newrow_pos, int newcolumn_pos, int newvalue) {
   if (first == NULL) {
     temp->value = newvalue;
     temp->row_pos = newrow_pos;
-    temp->column_pos = newcolumn_pos - 1;
+    temp->column_pos = newcolumn_pos;
     temp->next = NULL;
 
     first = temp;
@@ -70,7 +90,7 @@ void LinkedList::addNode(int newrow_pos, int newcolumn_pos, int newvalue) {
     }
     tempNew->value = newvalue;
     tempNew->row_pos = newrow_pos;
-    tempNew->column_pos = newcolumn_pos - 1;
+    tempNew->column_pos = newcolumn_pos;
     tempNew->next = NULL;
     temp->next = tempNew;
   }
@@ -117,4 +137,44 @@ void LinkedList::printMatrix(int m, int n) {
   }
 }
 
-void LinkedList::matrixAdd(LinkedList A, LinkedList B) {}
+LinkedList LinkedList::matrixAdd(LinkedList A, LinkedList B) {
+  LinkedList C;
+  llNode *nodeA = A.first;
+  llNode *nodeB = B.first;
+
+  while (nodeA != NULL && nodeB != NULL) {
+    if (nodeA->row_pos == nodeB->row_pos) { // value in the same row
+      if (nodeA->column_pos == nodeB->column_pos) {
+        int sum = nodeA->value + nodeB->value;
+        C.addNode(nodeA->row_pos, nodeA->column_pos, sum);
+        nodeA = nodeA->next;
+        nodeB = nodeB->next;
+      } else {
+        if (nodeA->column_pos < nodeB->column_pos) {
+          C.addNode(nodeA->row_pos, nodeA->column_pos, nodeA->value);
+          nodeA = nodeA->next;
+        } else {
+          C.addNode(nodeB->row_pos, nodeB->column_pos, nodeB->value);
+          nodeB = nodeB->next;
+        }
+      }
+    } else {
+      if (nodeA->row_pos < nodeB->row_pos) {
+        C.addNode(nodeA->row_pos, nodeA->column_pos, nodeA->value);
+        nodeA = nodeA->next;
+      } else {
+        C.addNode(nodeB->row_pos, nodeB->column_pos, nodeB->value);
+        nodeB = nodeB->next;
+      }
+    }
+  }
+  while (nodeA != NULL) {
+    C.addNode(nodeA->row_pos, nodeA->column_pos, nodeA->value);
+    nodeA = nodeA->next;
+  }
+  while (nodeB != NULL) {
+    C.addNode(nodeB->row_pos, nodeB->column_pos, nodeB->value);
+    nodeB = nodeB->next;
+  }
+  return C;
+}
