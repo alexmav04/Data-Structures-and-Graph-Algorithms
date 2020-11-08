@@ -4,7 +4,6 @@ date:2020-10-26
 */
 
 #include <iostream>
-#include <string>
 using namespace std;
 
 class llNode {
@@ -31,42 +30,113 @@ public:
   void addNode(int newrow_pos, int newcolumn_pos, int newvalue);
   void printMatrix(int m, int n);
   LinkedList matrixAdd(LinkedList A, LinkedList B);
+  int search(LinkedList A, int row_index, int column_index);
+  LinkedList matrixMultiple(LinkedList A, LinkedList B, int m, int n, int l);
 };
 
 int main() {
-  int m, n, pos, value;
-
-  cin >> m >> n;
+  int m, n, l, pos, value;
+  int operation;
   LinkedList list1, list2, list3;
 
-  cout << "Enter the element of matrix A:" << endl;
-  for (int i = 0; i < m; i++) {
-    while (cin >> pos && pos != 0) {
-      cin >> value;
-      pos = pos - 1;
-      list1.addNode(i, pos, value);
-    };
+  cout << "Do addition, press 1; do multiplication, press 2:" << endl;
+  cin >> operation;
+  if (operation == 1) {
+    cout << "Enter the number of row and column:" << endl;
+    cin >> m >> n;
+
+    cout << "Enter the element of matrix A:" << endl;
+    for (int i = 0; i < m; i++) {
+      while (cin >> pos && pos != 0 && pos <= n) {
+        cin >> value;
+        pos = pos - 1;
+        list1.addNode(i, pos, value);
+      }
+      if (pos > n) {
+        cout << "It's not a valid column position." << endl;
+        break;
+      }
+    }
+
+    cout << "Enter the element of matrix B:" << endl;
+    for (int j = 0; j < m; j++) {
+      while (cin >> pos && pos != 0) {
+        if (pos > n) {
+          cout << "It's not a valid column position." << endl;
+          break;
+        };
+        cin >> value;
+        pos = pos - 1;
+        list2.addNode(j, pos, value);
+      }
+      if (pos > n) {
+        cout << "It's not a valid column position." << endl;
+        break;
+      }
+    }
+
+    list3 = list3.matrixAdd(list1, list2);
+
+    cout << endl;
+    cout << "The matrix A:" << endl;
+    list1.printMatrix(m, n);
+    cout << endl;
+    cout << "The matrix B:" << endl;
+    list2.printMatrix(m, n);
+    cout << endl;
+    cout << "The matrix A+B:" << endl;
+    list3.printMatrix(m, n);
+    cout << endl;
+  } else if (operation == 2) {
+    cout << "Enter the row and column number of A:" << endl;
+    cin >> m >> n;
+    cout << endl;
+    cout << "Enter the column number of B:" << endl;
+    cin >> l;
+    cout << endl;
+
+    cout << "Enter the element of matrix A:" << endl;
+    for (int i = 0; i < m; i++) {
+      while (cin >> pos && pos != 0 && pos <= n) {
+        cin >> value;
+        pos = pos - 1;
+        list1.addNode(i, pos, value);
+      }
+      if (pos > n) {
+        cout << "It's not a valid column position." << endl;
+        break;
+      }
+    }
+
+    cout << "Enter the element of matrix B:" << endl;
+    for (int j = 0; j < n; j++) {
+      while (cin >> pos && pos != 0) {
+        if (pos > l) {
+          cout << "It's not a valid column position." << endl;
+          break;
+        };
+        cin >> value;
+        pos = pos - 1;
+        list2.addNode(j, pos, value);
+      }
+      if (pos > l) {
+        cout << "It's not a valid column position." << endl;
+        break;
+      }
+    }
+
+    list3 = list3.matrixMultiple(list1, list2, m, n, l);
+
+    cout << "The matrix A:" << endl;
+    list1.printMatrix(m, n);
+    cout << endl;
+    cout << "The matrix B:" << endl;
+    list2.printMatrix(n, l);
+    cout << endl;
+    cout << "The matrix AB:" << endl;
+    list3.printMatrix(m, l);
+    cout << endl;
   }
-
-  cout << "Enter the element of matrix B:" << endl;
-  for (int j = 0; j < m; j++) {
-    while (cin >> pos && pos != 0) {
-      cin >> value;
-      pos = pos - 1;
-      list2.addNode(j, pos, value);
-    };
-  }
-
-  list3 = list3.matrixAdd(list1, list2);
-
-  list1.printMatrix(m, n);
-  cout << endl;
-  list2.printMatrix(m, n);
-  cout << endl;
-  list3.PrintList();
-  cout << endl;
-  list3.printMatrix(m, n);
-  cout << endl;
 
   return 0;
 }
@@ -96,7 +166,6 @@ void LinkedList::addNode(int newrow_pos, int newcolumn_pos, int newvalue) {
   }
 }
 
-// for test
 void LinkedList::PrintList() {
   if (first == NULL) {
     cout << "List is empty.\n";
@@ -143,7 +212,7 @@ LinkedList LinkedList::matrixAdd(LinkedList A, LinkedList B) {
   llNode *nodeB = B.first;
 
   while (nodeA != NULL && nodeB != NULL) {
-    if (nodeA->row_pos == nodeB->row_pos) { // value in the same row
+    if (nodeA->row_pos == nodeB->row_pos) {
       if (nodeA->column_pos == nodeB->column_pos) {
         int sum = nodeA->value + nodeB->value;
         C.addNode(nodeA->row_pos, nodeA->column_pos, sum);
@@ -175,6 +244,38 @@ LinkedList LinkedList::matrixAdd(LinkedList A, LinkedList B) {
   while (nodeB != NULL) {
     C.addNode(nodeB->row_pos, nodeB->column_pos, nodeB->value);
     nodeB = nodeB->next;
+  }
+  return C;
+}
+
+int LinkedList::search(LinkedList A, int row_index, int column_index) {
+  llNode *start = A.first;
+  while (start != NULL) {
+    if (start->row_pos == row_index && start->column_pos == column_index) {
+      return start->value;
+    }
+    start = start->next;
+  }
+  return 0;
+}
+
+LinkedList LinkedList::matrixMultiple(LinkedList A, LinkedList B, int m, int n,
+                                      int l) {
+  LinkedList C;
+  int result = 0, valueA = 0, valueB = 0;
+
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < l; j++) {
+      result = 0;
+      for (int k = 0; k < n; k++) {
+        valueA = search(A, i, k);
+        valueB = search(B, k, j);
+        result += valueA * valueB;
+      }
+      if (result != 0) {
+        C.addNode(i, j, result);
+      }
+    }
   }
   return C;
 }
