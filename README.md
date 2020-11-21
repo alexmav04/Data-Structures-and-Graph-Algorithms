@@ -34,4 +34,4 @@ n.
 * Implement an efficient data structure for sparse matrices.
 
 ## 5-Evaluation-of-Arithmetic-Expression
-* 
+* Design and implement effcient data structure and algorithm for the evaluation of arithmetic expressions and assignment operation, infix format.

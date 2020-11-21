@@ -10,8 +10,8 @@ using namespace std;
 
 bool isOpertor(char ch);
 int order(char ch);
-void toPostfix(char infix[], char postfix[]);
-int getPostfix(char postfix[]);
+void toPostfix(char infix[], char postfix[], char foo[], int posAnswer);
+void getPostfix(char postfix[], char foo[], int answer[], int posAnswer);
 
 class stackLL {
 private:
@@ -20,15 +20,15 @@ private:
 
 public:
   stackLL() : topIndex(-1) { stack = new char[1]; }
-  bool isEmpty();
-  void push(char ch);
-  void pop();
-  int top();
-  int size();
+  bool isEmpty();     // verify if the stack is empty
+  void push(char ch); // put the new element on the top of the stack
+  void pop();         // delete the element on the top of the stack
+  int top();          // return the element on the top of the stack
+  int size();         // return the size of the stack
 };
 
 bool stackLL::isEmpty() {
-  // verify if the stack is empty
+  //
   return (topIndex == -1);
 }
 
@@ -60,18 +60,21 @@ int stackLL::size() {
 }
 
 int main() {
-  char infix[1000];
-  cin >> infix;
-  cout << infix << endl;
-  char postfix[1000];
-  toPostfix(infix, postfix);
-  cout << postfix << endl;
-  int result = getPostfix(postfix);
-  cout << result << endl;
+  char infix[1000], postfix[1000];
+  char foo[1000];
+  int answer[1000], posAnswer;
+
+  cout << "Enter something you want to calculat:" << endl;
+
+  while (cin >> infix) {
+    toPostfix(infix, postfix, foo, posAnswer);
+    getPostfix(postfix, foo, answer, posAnswer);
+  }
 
   return 0;
 }
 bool isOpertor(char ch) {
+  // verify operator
   switch (ch) {
   case '+':
   case '-':
@@ -83,6 +86,7 @@ bool isOpertor(char ch) {
   }
 }
 int order(char ch) {
+  // the order of the operator
   switch (ch) {
   case '(':
     return 0;
@@ -97,7 +101,7 @@ int order(char ch) {
   }
 }
 
-void toPostfix(char infix[], char postfix[]) {
+void toPostfix(char infix[], char postfix[], char foo[], int posAnswer) {
   stackLL s1;
   s1.push('#');
   int i = 0, j = 0;
@@ -107,6 +111,7 @@ void toPostfix(char infix[], char postfix[]) {
     } else if (infix[i] == '(') {
       s1.push(infix[i]);
     } else if (infix[i] == ')') {
+      // loop until find the left parentheses
       while (s1.top() != '(') {
         postfix[j++] = ' ';
         postfix[j++] = s1.top();
@@ -125,6 +130,12 @@ void toPostfix(char infix[], char postfix[]) {
         }
         s1.push(infix[i]);
       }
+    } else if ((infix[i] >= 'a' && infix[i] <= 'z') ||
+               (infix[i] >= 'A' && infix[i] <= 'Z')) {
+      // store the variable
+      foo[sizeof(*foo) + 1] = infix[i];
+      posAnswer = sizeof(*foo) + 1;
+      i++;
     }
     i++;
   }
@@ -135,7 +146,8 @@ void toPostfix(char infix[], char postfix[]) {
   }
   postfix[j - 1] = '\0';
 }
-int getPostfix(char postfix[]) {
+
+void getPostfix(char postfix[], char foo[], int answer[], int posAnswer) {
   stackLL s1;
   int i = 0, result = 0;
   int x1 = 0, x2 = 0;
@@ -181,8 +193,20 @@ int getPostfix(char postfix[]) {
       int temp = x2 / x1;
       s1.push(temp);
       i++;
+    } else {
+      int k = 0;
+      while (foo[k] != '\0') {
+        if (postfix[i] == foo[k]){
+          postfix[i] = answer[k];
+        }
+        k++;
+      }
     }
   }
   result = s1.top();
-  return result;
+  if (foo[0] != '\0') {
+    cout << foo[0] << " = " << result << endl;
+  } else {
+    cout << result << endl;
+  }
 }
