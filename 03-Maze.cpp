@@ -3,105 +3,80 @@ Design and implement efficient data structure and algorithm for finding shortest
 path from the start cell s to the destination cell t in a maze of dimension m x
 n.
 
-date:2020-10-01
+date:2020-10-26
 */
-
 #include <iostream>
-#include <string>
-#include <vector>
 using namespace std;
-int m, n; // for dimension m x n
-struct QueueNode;
-struct Queue;
 
-int main(int argc, char *argv[]) {
-  Queue q;
-  q.enQueue(10);
-}
-
-struct QueueNode {
-  int data;
-  QueueNode *next;
-  QueueNode() {
-    data = 0;
-    next = NULL;
-  }
-  QueueNode(int x) {
-    data = x;
-    next = NULL;
-  }
-};
-
-struct Queue {
-  QueueNode *front, *rear;
-  int size;
-  Queue() {
-    front = rear = NULL;
-    size = 0;
-  }
-
-  void enQueue(int x) {
-    QueueNode *temp = new QueueNode(x);
-
-    if (rear == NULL) {
-      front = rear = temp;
-      return;
-    }
-    rear->next = temp;
-    rear = temp;
-    size++;
-  }
-  void deQueue() {
-    if (front == NULL)
-      return;
-
-    QueueNode *temp = front;
-    front = front->next;
-
-    if (front == NULL)
-      rear = NULL;
-
-    delete (temp);
-    size--;
-  }
-  bool isEmpty() {
-    if (size == 0)
-      return 1;
-    else
-      return 0;
-  }
-  int getFront() {
-    if (isEmpty()) {
-      cout << "The queue is empty." << endl;
-      return -1;
-    }
-    return front->data;
-  }
-  int getRear() {
-    if (isEmpty()) {
-      cout << "The queue is empty." << endl;
-      return -1;
-    }
-    return rear->data;
-  }
-  int getSize() { return size; };
-};
-
-class QueueMethod {
+class llNode {
 private:
-  QueueNode *front;
-  QueueNode *rear;
-  int size;
+  char value;
+  int row_pos;
+  int column_pos;
+  llNode *next;
 
 public:
-  QueueMethod() {
-    front = rear = NULL;
-    size = 0;
-  }
-  // void Push(int x);
-  // void Pop();
-  bool isEmpty();
-  int getFront();
-  int getBack();
-  int getSize();
+  llNode() : next(NULL){};
+  llNode(char a) : value(a), next(NULL){};
+
+  friend class LinkedList;
 };
+
+class LinkedList {
+private:
+  llNode *first;
+
+public:
+  LinkedList() : first(NULL){};
+  void PrintList();
+  void addNode(int newrow_pos, int newcolumn_pos, char newvalue);
+  void printMatrix(int m, int n);
+  int search(LinkedList A, int row_index, int column_index);
+};
+
+int main() {
+  int m, n, pos;
+  char value;
+  LinkedList list1, list2, list3;
+
+  cout << "Enter the number of row and column:" << endl;
+  cin >> m >> n;
+
+  cout << "Enter the element of matrix A:" << endl;
+  for (int i = 0; i < m; i++) {
+    while (cin >> pos && pos != 0 && pos <= n) {
+      cin >> value;
+      pos = pos - 1;
+      list1.addNode(i, pos, value);
+    }
+    if (pos > n) {
+      cout << "It's not a valid value." << endl;
+      break;
+    }
+  }
+}
+
+void LinkedList::addNode(int newrow_pos, int newcolumn_pos, char newvalue) {
+  llNode *newNode = new llNode(newvalue);
+  llNode *temp = new llNode();
+  llNode *tempNew = new llNode();
+
+  if (first == NULL) {
+    temp->value = newvalue;
+    temp->row_pos = newrow_pos;
+    temp->column_pos = newcolumn_pos;
+    temp->next = NULL;
+
+    first = temp;
+  } else {
+    temp = first;
+    while (temp->next != NULL) {
+      temp = temp->next;
+    }
+    tempNew->value = newvalue;
+    tempNew->row_pos = newrow_pos;
+    tempNew->column_pos = newcolumn_pos;
+    tempNew->next = NULL;
+    temp->next = tempNew;
+  }
+}
