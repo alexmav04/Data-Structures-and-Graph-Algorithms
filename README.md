@@ -35,3 +35,9 @@ n.
 
 ## 5-Evaluation-of-Arithmetic-Expression
 * Design and implement effcient data structure and algorithm for the evaluation of arithmetic expressions and assignment operation, infix format.
+
+## 6-Segment-Tree
+* Design and implement effcient data structure and algorithm for the evaluation of arithmetic expressions and assignment operation, infix format.
+
+## 7-Huffman-Code
+Not done yet.
